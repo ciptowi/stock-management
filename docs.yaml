@@ -1,0 +1,862 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Basic Authentication
+  description: This is a RESTfull API application built using Express JS and Mongo DB.
+    implement authentication security with JSON web token.
+
+servers:
+  - description: Local server
+    url: http://localhost:5000/api
+tags:
+- name: auth
+  description: Operations about Authentication
+- name: product
+  description: Operations about Product
+
+components:
+  securitySchemes:
+    x-access-token:
+      type: apiKey
+      name: x-access-token
+      in: header
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+      - auth
+      summary: Create user
+      description: ''
+      requestBody:
+        description: Create a new user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User was registered successfully!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '400':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+  /auth/signin:
+    post:
+      tags:
+      - auth
+      summary: Login to system
+      description: ''
+      requestBody:
+        required: true
+        description: List of user object
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:           
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User logged in successfully!"
+                  data:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                      username: 
+                        type: string
+                      email:
+                        type: string
+                      accessToken: 
+                        type: string
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:           
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed! Wrong Password"
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '404':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:           
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed! User Not found."
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Erorr
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:           
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+  /user/update:
+    put:
+      tags:
+      - auth
+      summary: Update user
+      description: ''
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                - username
+                - email
+                - oldPassword
+                - password
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                oldPassword:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User was updated successfully!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '400':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+        - x-access-token: []
+  /user/delete:
+    delete:
+      tags:
+      - auth
+      summary: Delete user
+      description: ''
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User was deleted successfully!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '400':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+        - x-access-token: []
+
+  /create/product:
+    post:
+      tags:
+      - product
+      summary: 'Create new product'
+      description: ''
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                - name
+                - category
+                - price
+                - stock
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+      responses:
+        '201':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product was created successfully!"
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '403':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No token provided!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+      - x-access-token: []
+  /products:
+    get:
+      tags:
+      - product
+      summary: 'Read all products'
+      description: ''
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All products"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id: 
+                          type: string
+                        name:
+                          type: string
+                        category: 
+                          type: string
+                        price: 
+                          type: number
+                        stock: 
+                          type: number
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '403':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No token provided!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+      - x-access-token: []
+  /product/{Id}:
+    get:
+      tags:
+      - product
+      summary: 'Get one product'
+      description: ''
+      parameters:
+        - name: Id
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Product by ID xxxxxx
+                  data:
+                    type: object
+                    properties:
+                      _id: 
+                        type: string
+                      name:
+                        type: string
+                      category: 
+                        type: string
+                      price: 
+                        type: number
+                      stock: 
+                        type: number
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '403':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No token provided!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+      - x-access-token: []
+    put:
+      tags:
+      - product
+      summary: 'Update product'
+      description: ''
+      parameters:
+        - name: Id
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object 
+              required:
+                - name
+                - category
+                - price
+                - stock
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Product was updated successfully!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '403':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No token provided!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+      - x-access-token: []  
+    delete:
+      tags:
+      - product
+      summary: 'Delete product'
+      parameters:
+        - name: Id
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Product was deleted successfully!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '401':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '403':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No token provided!
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+                    example: null
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: null
+                  data:
+                    type: string
+                    example: null
+                  error:
+                    type: string
+      security:
+      - x-access-token: []
+    
